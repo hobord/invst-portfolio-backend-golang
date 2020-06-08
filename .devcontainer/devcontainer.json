@@ -1,0 +1,66 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.117.1/containers/go
+{
+	"name": "Go",
+	"dockerFile": "Dockerfile",
+	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": { 
+		"terminal.integrated.shell.linux": "/bin/bash",
+		"[go]": {
+			// "editor.codeActionsOnSaveTimeout": 3000,
+			"editor.snippetSuggestions": "none",
+			"editor.formatOnSave": true,
+			"editor.codeActionsOnSave": {
+				"source.organizeImports": true
+			}
+		},
+		"go.gopath": "/golang/go-tools",
+		"go.useLanguageServer": true,
+		"go.lintFlags": [
+			"--enable-all",
+			"--new"
+		],
+		"go.formatTool": "goimports",
+		"go.useCodeSnippetsOnFunctionSuggest": true,
+		"go.useCodeSnippetsOnFunctionSuggestWithoutType": true,
+		"go.autocompleteUnimportedPackages": true,
+		"gopls": {
+			"usePlaceholders": true, // add parameter placeholders when completing a function
+			// Experimental settings
+			"completeUnimported": true, // autocomplete unimported packages
+			"deepCompletion": true // enable deep completion
+		},
+		"go.languageServerFlags": [
+			"serve"
+			// "-rpc.trace", // for more detailed debug logging
+			// "--debug=localhost:6060" // to investigate memory usage, see profiles
+		]
+	},
+	
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-vscode.go",
+		"zxh404.vscode-proto3",
+		"romanpeshkov.go-test-outline",
+		"windmilleng.vscode-go-autotest",
+		"msyrus.go-doc",
+		"maxmedia.go-prof",
+		"defaltd.go-coverage-viewer",
+		"banxi.go-snippets"
+	],
+
+	"mounts": [
+		// "source=${env:HOME}${env:USERPROFILE}/.aspnet/https,target=/home/vscode/.aspnet/https,type=bind"
+		"source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind"
+	],
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "go version",
+
+	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode"
+}
