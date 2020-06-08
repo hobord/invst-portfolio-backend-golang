@@ -22,7 +22,10 @@ var serverCMD = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("Start server")
 		httpPort, _ := cmd.Flags().GetInt("port")
+		requestsLog, _ := cmd.Flags().GetBool("log")
 		dbConnectionSTR, _ := cmd.Flags().GetString("db_connection")
+
+		log.Printf("Requests log is: %v", requestsLog)
 
 		dbConn, err := sql.Open("mysql", dbConnectionSTR)
 		if err != nil {
@@ -45,5 +48,6 @@ func init() {
 
 	rootCmd.AddCommand(serverCMD)
 	serverCMD.Flags().IntP("port", "p", viper.GetInt("PORT"), "8080")
-	serverCMD.Flags().IntP("db_connection", "d", viper.GetInt("DB_CONNECTION"), "dbuser:secret@tcp(mysql:3306)/testdb?multiStatements=true")
+	serverCMD.Flags().BoolP("log", "l", viper.GetBool("log"), "log requests into stdout")
+	serverCMD.Flags().StringP("db_connection", "d", viper.GetString("DB_CONNECTION"), "dbuser:secret@tcp(mysql:3306)/testdb?multiStatements=true")
 }

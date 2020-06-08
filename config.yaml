@@ -1,6 +1,2 @@
 PORT: 8081
-DATABASE:
-    DRIVER: mysql
-    USER: db_user
-    PASSWORD: db_pass
-    DB_NAME: database
+DB_CONNECTION: dbuser:secret@tcp(mysql:3306)/testdb?multiStatements=true
