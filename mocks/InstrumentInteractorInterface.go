@@ -29,29 +29,6 @@ func (_m *InstrumentInteractorInterface) Delete(ctx context.Context, id int) err
 	return r0
 }
 
-// GetAll provides a mock function with given fields: ctx
-func (_m *InstrumentInteractorInterface) GetAll(ctx context.Context) ([]*entity.Instrument, error) {
-	ret := _m.Called(ctx)
-
-	var r0 []*entity.Instrument
-	if rf, ok := ret.Get(0).(func(context.Context) []*entity.Instrument); ok {
-		r0 = rf(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*entity.Instrument)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // GetByID provides a mock function with given fields: ctx, id
 func (_m *InstrumentInteractorInterface) GetByID(ctx context.Context, id int) (*entity.Instrument, error) {
 	ret := _m.Called(ctx, id)
@@ -75,6 +52,36 @@ func (_m *InstrumentInteractorInterface) GetByID(ctx context.Context, id int) (*
 	return r0, r1
 }
 
+// List provides a mock function with given fields: ctx, keyword, offset, limit
+func (_m *InstrumentInteractorInterface) List(ctx context.Context, keyword string, offset int, limit int) ([]*entity.Instrument, int, error) {
+	ret := _m.Called(ctx, keyword, offset, limit)
+
+	var r0 []*entity.Instrument
+	if rf, ok := ret.Get(0).(func(context.Context, string, int, int) []*entity.Instrument); ok {
+		r0 = rf(ctx, keyword, offset, limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entity.Instrument)
+		}
+	}
+
+	var r1 int
+	if rf, ok := ret.Get(1).(func(context.Context, string, int, int) int); ok {
+		r1 = rf(ctx, keyword, offset, limit)
+	} else {
+		r1 = ret.Get(1).(int)
+	}
+
+	var r2 error
+	if rf, ok := ret.Get(2).(func(context.Context, string, int, int) error); ok {
+		r2 = rf(ctx, keyword, offset, limit)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
+}
+
 // Save provides a mock function with given fields: ctx, _a1
 func (_m *InstrumentInteractorInterface) Save(ctx context.Context, _a1 *entity.Instrument) error {
 	ret := _m.Called(ctx, _a1)
@@ -87,27 +94,4 @@ func (_m *InstrumentInteractorInterface) Save(ctx context.Context, _a1 *entity.I
 	}
 
 	return r0
-}
-
-// Search provides a mock function with given fields: ctx, keyword
-func (_m *InstrumentInteractorInterface) Search(ctx context.Context, keyword string) ([]*entity.Instrument, error) {
-	ret := _m.Called(ctx, keyword)
-
-	var r0 []*entity.Instrument
-	if rf, ok := ret.Get(0).(func(context.Context, string) []*entity.Instrument); ok {
-		r0 = rf(ctx, keyword)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*entity.Instrument)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, keyword)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
 }

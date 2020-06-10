@@ -17,7 +17,7 @@ configure:
 	go get github.com/vektra/mockery/.../
 	mockery -all
 test:
-	go test -race 
+	go test ./... -race 
 
 compile:
 	go build -o $(TARGET)

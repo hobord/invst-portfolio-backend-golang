@@ -9,8 +9,7 @@ import (
 
 type InstrumentInteractorInterface interface {
 	GetByID(ctx context.Context, id int) (*entity.Instrument, error)
-	GetAll(ctx context.Context) ([]*entity.Instrument, error)
-	Search(ctx context.Context, keyword string) ([]*entity.Instrument, error)
+	List(ctx context.Context, keyword string, offset, limit int) ([]*entity.Instrument, int, error)
 	Save(ctx context.Context, entity *entity.Instrument) error
 	Delete(ctx context.Context, id int) error
 }
@@ -32,14 +31,17 @@ func (i *InstrumentInteractor) GetByID(ctx context.Context, id int) (*entity.Ins
 	return i.InstrumentRepository.GetByID(ctx, id)
 }
 
-// GetAll return all entity
-func (i *InstrumentInteractor) GetAll(ctx context.Context) ([]*entity.Instrument, error) {
-	return i.InstrumentRepository.GetAll(ctx)
-}
-
-// Search return entities by keyword
-func (i *InstrumentInteractor) Search(ctx context.Context, keyword string) ([]*entity.Instrument, error) {
-	return i.InstrumentRepository.Search(ctx, keyword)
+// List is get entities by keyword
+func (i *InstrumentInteractor) List(ctx context.Context, keyword string, offset, limit int) ([]*entity.Instrument, int, error) {
+	entities, err := i.InstrumentRepository.List(ctx, keyword, offset, limit)
+	if err != nil {
+		return nil, 0, err
+	}
+	cnt, err := i.InstrumentRepository.TotalCountOfList(ctx, keyword)
+	if err != nil {
+		return nil, 0, err
+	}
+	return entities, cnt, nil
 }
 
 // Save is save to persistent the entity

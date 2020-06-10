@@ -9,10 +9,11 @@ import (
 func MakeRouting(router *mux.Router, instrumentInteractor interactor.InstrumentInteractorInterface) {
 	instrumentApp := handlers.CreateInstrumentRestHTTPModule(instrumentInteractor)
 
-	router.HandleFunc("/instruments", instrumentApp.Create).Methods("POST")
-	router.HandleFunc("/instruments/{id}", instrumentApp.GetByID)
-	router.HandleFunc("/instruments", instrumentApp.GetAll).Methods("GET")
-	router.HandleFunc("/instruments/{keyword}", instrumentApp.Search).Methods("GET")
-	router.HandleFunc("/instruments", instrumentApp.Update).Methods("PUT")
-	router.HandleFunc("/instruments/{id}", instrumentApp.Delete).Methods("DELETE")
+	router.HandleFunc("/instruments", instrumentApp.CreateInstrument).Methods("POST")
+	router.HandleFunc("/instruments/{id}", instrumentApp.GetInstrumentByID)
+	// router.HandleFunc("/instruments", instrumentApp.GetAllInstrument).Methods("GET")
+	router.HandleFunc("/instruments", instrumentApp.ListInstrument).Methods("GET")
+
+	router.HandleFunc("/instruments", instrumentApp.UpdateInstrument).Methods("PUT")
+	router.HandleFunc("/instruments/{id}", instrumentApp.DeleteInstrument).Methods("DELETE")
 }

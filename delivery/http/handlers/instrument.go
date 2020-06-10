@@ -34,7 +34,7 @@ func makeInstrumentDTO(instrument *entity.Instrument) *dto.Instrument {
 }
 
 // GetByID return entity by id
-func (app *InstrumentRestHTTPModule) GetByID(w http.ResponseWriter, r *http.Request) {
+func (app *InstrumentRestHTTPModule) GetInstrumentByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
@@ -71,50 +71,13 @@ func (app *InstrumentRestHTTPModule) GetByID(w http.ResponseWriter, r *http.Requ
 	w.Write(js)
 }
 
-// GetAll return all entity
-func (app *InstrumentRestHTTPModule) GetAll(w http.ResponseWriter, r *http.Request) {
-	res, err := app.instrumentInteractor.GetAll(r.Context())
+// List return list of entities
+func (app *InstrumentRestHTTPModule) ListInstrument(w http.ResponseWriter, r *http.Request) {
+	keyword := r.FormValue("key")
+
+	res, _, err := app.instrumentInteractor.List(r.Context(), keyword, 0, 100)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if res == nil || len(res) == 0 {
-		err = errors.New("no resource found")
-		http.Error(w, err.Error(), http.StatusNotFound)
-		return
-	}
-
-	entityDTOs := make([]*dto.Instrument, 0)
-	for _, entity := range res {
-		entityDTO := makeInstrumentDTO(entity)
-		entityDTOs = append(entityDTOs, entityDTO)
-	}
-
-	// Convert to json
-	js, err := json.Marshal(entityDTOs)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Send back to response.
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-// Search return all entity
-func (app *InstrumentRestHTTPModule) Search(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	keyword := vars["keyword"]
-
-	res, err := app.instrumentInteractor.Search(r.Context(), keyword)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if res == nil || len(res) == 0 {
-		err = errors.New("no resource found")
-		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
@@ -137,10 +100,10 @@ func (app *InstrumentRestHTTPModule) Search(w http.ResponseWriter, r *http.Reque
 }
 
 // Create is update to persistent the entity
-func (app *InstrumentRestHTTPModule) Create(w http.ResponseWriter, r *http.Request) {
+func (app *InstrumentRestHTTPModule) CreateInstrument(w http.ResponseWriter, r *http.Request) {
 	// Decode the request DTO.
 	decoder := json.NewDecoder(r.Body)
-	var createDTO dto.Instrument
+	var createDTO dto.CreateInstrument
 	err := decoder.Decode(&createDTO)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -173,7 +136,7 @@ func (app *InstrumentRestHTTPModule) Create(w http.ResponseWriter, r *http.Reque
 }
 
 // Update is update to persistent the entity.
-func (app *InstrumentRestHTTPModule) Update(w http.ResponseWriter, r *http.Request) {
+func (app *InstrumentRestHTTPModule) UpdateInstrument(w http.ResponseWriter, r *http.Request) {
 	// Decode the request DTO.
 	decoder := json.NewDecoder(r.Body)
 	var updateDTO dto.Instrument
@@ -227,7 +190,7 @@ func (app *InstrumentRestHTTPModule) Update(w http.ResponseWriter, r *http.Reque
 }
 
 // Delete entity
-func (app *InstrumentRestHTTPModule) Delete(w http.ResponseWriter, r *http.Request) {
+func (app *InstrumentRestHTTPModule) DeleteInstrument(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 

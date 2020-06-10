@@ -28,29 +28,6 @@ func (_m *InstrumentRepository) Delete(ctx context.Context, id int) error {
 	return r0
 }
 
-// GetAll provides a mock function with given fields: ctx
-func (_m *InstrumentRepository) GetAll(ctx context.Context) ([]*entity.Instrument, error) {
-	ret := _m.Called(ctx)
-
-	var r0 []*entity.Instrument
-	if rf, ok := ret.Get(0).(func(context.Context) []*entity.Instrument); ok {
-		r0 = rf(ctx)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*entity.Instrument)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // GetByID provides a mock function with given fields: ctx, id
 func (_m *InstrumentRepository) GetByID(ctx context.Context, id int) (*entity.Instrument, error) {
 	ret := _m.Called(ctx, id)
@@ -74,6 +51,29 @@ func (_m *InstrumentRepository) GetByID(ctx context.Context, id int) (*entity.In
 	return r0, r1
 }
 
+// List provides a mock function with given fields: ctx, keyword, offset, limit
+func (_m *InstrumentRepository) List(ctx context.Context, keyword string, offset int, limit int) ([]*entity.Instrument, error) {
+	ret := _m.Called(ctx, keyword, offset, limit)
+
+	var r0 []*entity.Instrument
+	if rf, ok := ret.Get(0).(func(context.Context, string, int, int) []*entity.Instrument); ok {
+		r0 = rf(ctx, keyword, offset, limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entity.Instrument)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string, int, int) error); ok {
+		r1 = rf(ctx, keyword, offset, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Save provides a mock function with given fields: ctx, _a1
 func (_m *InstrumentRepository) Save(ctx context.Context, _a1 *entity.Instrument) error {
 	ret := _m.Called(ctx, _a1)
@@ -88,17 +88,15 @@ func (_m *InstrumentRepository) Save(ctx context.Context, _a1 *entity.Instrument
 	return r0
 }
 
-// Search provides a mock function with given fields: ctx, keyword
-func (_m *InstrumentRepository) Search(ctx context.Context, keyword string) ([]*entity.Instrument, error) {
+// TotalCountOfList provides a mock function with given fields: ctx, keyword
+func (_m *InstrumentRepository) TotalCountOfList(ctx context.Context, keyword string) (int, error) {
 	ret := _m.Called(ctx, keyword)
 
-	var r0 []*entity.Instrument
-	if rf, ok := ret.Get(0).(func(context.Context, string) []*entity.Instrument); ok {
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, string) int); ok {
 		r0 = rf(ctx, keyword)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*entity.Instrument)
-		}
+		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
