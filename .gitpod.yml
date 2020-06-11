@@ -2,8 +2,8 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: make configure && make
-    command: bin/portfolio-server
+  - init: make configure && make && .gitpod.init.db.sh
+    command: bin/portfolio-server serve -l 8080 -H localhost -d testdb --db_password="" -u root -f ./
 ports:
   - port: 8080
     onOpen: open-preview
