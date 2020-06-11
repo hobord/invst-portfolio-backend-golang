@@ -5,3 +5,6 @@ FROM gitpod/workspace-mysql
 # RUN brew install bastet
 #
 # More information: https://www.gitpod.io/docs/config-docker/
+
+RUN mysql -e "CREATE DATABASE testdb;" \
+    && mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'dbuser'@'localhost' IDENTIFIED BY 'secret';"
