@@ -12,7 +12,7 @@ import (
 	"github.com/hobord/invst-portfolio-backend-golang/domain/repository"
 )
 
-// InstrumentRepository Implements repository.InstrumentRepository
+// InstrumentMysqlRepository Implements repository.InstrumentRepository
 type InstrumentMysqlRepository struct {
 	conn *sql.DB
 }
@@ -22,6 +22,7 @@ func NewInstrumentMysqlRepository(conn *sql.DB) repository.InstrumentRepository 
 	return &InstrumentMysqlRepository{conn: conn}
 }
 
+// GetByID get instument by id
 func (r *InstrumentMysqlRepository) GetByID(ctx context.Context, id int) (*entity.Instrument, error) {
 	querySTR := "SELECT instrumentId, name, symbol, instrumentType FROM instrument WHERE instrumentId=?;"
 	row, err := queryRow(ctx, r.conn, querySTR, id)
@@ -52,6 +53,7 @@ func (r *InstrumentMysqlRepository) parseRows(rows *sql.Rows) ([]*entity.Instrum
 	return results, nil
 }
 
+// GetAll Give back all reckords pls do not use
 func (r *InstrumentMysqlRepository) GetAll(ctx context.Context) ([]*entity.Instrument, error) {
 	querySTR := "SELECT instrumentId, name, symbol, instrumentType FROM instrument;"
 	rows, err := query(ctx, r.conn, querySTR)
@@ -65,21 +67,7 @@ func (r *InstrumentMysqlRepository) GetAll(ctx context.Context) ([]*entity.Instr
 	return results, err
 }
 
-// SEARCH
-func (r *InstrumentMysqlRepository) Search(ctx context.Context, keyword string) ([]*entity.Instrument, error) {
-	querySTR := "SELECT instrumentId, name, symbol, instrumentType FROM instrument WHERE symbol LIKE concat('%', ?, '%');"
-	rows, err := query(ctx, r.conn, querySTR, keyword)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	results, err := r.parseRows(rows)
-
-	return results, err
-}
-
-// List
+// List is get list of Instruments according by keyword. You have to use pagination
 func (r *InstrumentMysqlRepository) List(ctx context.Context, keyword string, offset, limit int) ([]*entity.Instrument, error) {
 	querySTR := "SELECT instrumentId, name, symbol, instrumentType FROM instrument"
 	queryParams := make([]interface{}, 0)
@@ -92,7 +80,7 @@ func (r *InstrumentMysqlRepository) List(ctx context.Context, keyword string, of
 		querySTR = fmt.Sprintf("%s LIMIT %d, %d", querySTR, offset, limit)
 	}
 	querySTR = querySTR + ";"
-	log.Println(querySTR)
+
 	rows, err := query(ctx, r.conn, querySTR, queryParams...)
 	if err != nil {
 		return nil, err
@@ -104,6 +92,7 @@ func (r *InstrumentMysqlRepository) List(ctx context.Context, keyword string, of
 	return results, err
 }
 
+// TotalCountOfList is return of total count of the search results (for pagination)
 func (r *InstrumentMysqlRepository) TotalCountOfList(ctx context.Context, keyword string) (int, error) {
 	var cnt int
 	querySTR := "SELECT count(instrumentId) FROM instrument"
@@ -121,6 +110,7 @@ func (r *InstrumentMysqlRepository) TotalCountOfList(ctx context.Context, keywor
 	return cnt, nil
 }
 
+// Save is saving the Instrument entity into the database
 func (r *InstrumentMysqlRepository) Save(ctx context.Context, entity *entity.Instrument) error {
 	var querySTR string
 	isExists, err := r.GetByID(ctx, entity.ID)
@@ -143,6 +133,7 @@ func (r *InstrumentMysqlRepository) Save(ctx context.Context, entity *entity.Ins
 	return err
 }
 
+// Delete is delete the inetity record from the databese
 func (r *InstrumentMysqlRepository) Delete(ctx context.Context, id int) error {
 	querySTR := "DELETE FROM entity WHERE instrumentId=?;"
 	stmt, err := r.conn.Prepare(querySTR)
