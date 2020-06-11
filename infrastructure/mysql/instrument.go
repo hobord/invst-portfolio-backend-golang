@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
-
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/hobord/invst-portfolio-backend-golang/domain/entity"
