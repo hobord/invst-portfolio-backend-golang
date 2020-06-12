@@ -14,7 +14,7 @@
     - [To Kubernetes](#to-kubernetes)
 
 ## Develop
-I recommend use Docker!
+I recommend to use Docker!
 
 ### With vim
 
@@ -41,11 +41,11 @@ Run unit tests.
 make configure
 make test
 ```
-I created only one example unittest for http GetInstrumentByID handler, I need more time make the all tests.
+I created only one example unittest for http GetInstrumentByID handler, I need more time to make all the tests.
 
-I using [testify](https://pkg.go.dev/mod/github.com/stretchr/testify@v1.4.0).
+I used [testify](https://pkg.go.dev/mod/github.com/stretchr/testify@v1.4.0).
 
-And I using [mockery](github.com/vektra/mockery) to generate mocks from interfaces.
+And I used [mockery](github.com/vektra/mockery) to generate mocks from interfaces.
 
 ## Build
 
@@ -83,10 +83,10 @@ portfolio-server serve -l 8080 -H mysql:3306 -d testdb -u dbuser -P secret -f ./
 ``` 
 
 ### DB init
-It is create database tables, and seeding the default data.
+It create database tables, and seeding the default data.
 
-It is support migrate database stages.
-I using github.com/golang-migrate/migrate library.
+It support migrate database stages.
+I use github.com/golang-migrate/migrate library.
 ```
 portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastructure/mysql/migrations 
 
