@@ -56,5 +56,5 @@ func init() {
 	serverCMD.Flags().StringP("db_password", "P", viper.GetString("DB_PASSWORD"), "Database password")
 	serverCMD.Flags().StringP("db_host", "H", viper.GetString("DB_HOST"), "Database host:port")
 	serverCMD.Flags().StringP("db_name", "d", viper.GetString("DB_NAME"), "Database name")
-	serverCMD.Flags().StringP("frontend", "f", viper.GetString("FRONTEND"), "Public frontend files direcotry path")
+	serverCMD.Flags().StringP("frontend", "f", viper.GetString("FRONTEND"), "Public frontend files directory path")
 }

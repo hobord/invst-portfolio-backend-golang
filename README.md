@@ -51,9 +51,18 @@ Flags:
   -d, --db_name string       Database name
   -P, --db_password string   Database password
   -u, --db_user string       Database user
-  -f, --frontend string      Public frontend files direcotry path
+  -f, --frontend string      Public frontend files directory path
   -h, --help                 help for serve
   -l, --port int             Listen on this port, default: 8080
+
+Environment vars:
+  PORT: "8080"
+  DB_HOST: "mysql:3306"
+  DB_USER: "dbuser"
+  DB_PASSWORD: "secret"
+  DB_NAME: "testdb"
+  MIGRATIONS: "/app/migrations"
+  FRONTEND: "/app/public"
 
 portfolio-server serve -l 8080 -H mysql:3306 -d testdb -u dbuser -P secret -f ./
 ``` 
@@ -62,7 +71,7 @@ portfolio-server serve -l 8080 -H mysql:3306 -d testdb -u dbuser -P secret -f ./
 It is create database tables, and seeding the default data.
 
 It is support migrate database stages.
-I using github.com/golang-migrate/migrate library.s
+I using github.com/golang-migrate/migrate library.
 ```
 portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastructure/mysql/migrations 
 
@@ -73,16 +82,16 @@ portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastr
 
 ## Deployment
 
-### Docker compose
+### with docker compose
 
 ```
 docker-compose -f deployment/docker-compose.yaml up
 ```
 
-### Kubernetes
-- You should modify the deployment/kubernetes.yaml file!
+### To Kubernetes
+- You should modify the 'deployment/kubernetes.yaml' file!
 - Update the environment variables because this deployment not contains mysql deployment
-- I did not configured namespace!
+- I did not configured namespace, so it will apply to your current context!
 
 ```
 kubectl apply -f deployment/kubernetes.yaml
