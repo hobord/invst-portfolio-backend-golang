@@ -1,1 +1,0 @@
--- ALTER TABLE instrument AUTO_INCREMENT=999999;

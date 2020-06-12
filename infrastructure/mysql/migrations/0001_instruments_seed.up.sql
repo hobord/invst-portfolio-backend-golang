@@ -15,5 +15,4 @@ INSERT INTO instrument(instrumentId,name,symbol,instrumentType) VALUES
     (52,'Euro New Zealand Dollar','EUR/NZD','currency'),
     (1487,'Australian Dollar Euro','AUD/EUR','currency'),
     (1525,'Canadian Dollar Euro','CAD/EUR','currency');
-ALTER TABLE instrument AUTO_INCREMENT=999999;
 

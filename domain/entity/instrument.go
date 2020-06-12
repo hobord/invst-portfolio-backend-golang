@@ -7,9 +7,9 @@ type Instrument struct {
 	Type   string
 }
 
-func CreateInstrumentEntity(name, symbol, instumentType string) *Instrument {
+func CreateInstrumentEntity(id int, name, symbol, instumentType string) *Instrument {
 	return &Instrument{
-		ID:     0,
+		ID:     id,
 		Name:   name,
 		Symbol: symbol,
 		Type:   instumentType,

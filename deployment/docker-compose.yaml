@@ -4,6 +4,7 @@ services:
   golang:
     working_dir: /workspace
     image: hobord/invst-portfolio:demo
+    command: bash -c "/app/init.sh"
     environment:
       PORT: "8080"
       DB_HOST: "mysql:3306"

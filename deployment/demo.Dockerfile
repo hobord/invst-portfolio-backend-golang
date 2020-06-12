@@ -42,4 +42,3 @@ COPY --from=frontend /workspace/dist /app/public
 
 ENV HOST 0.0.0.0
 
-CMD ["/app/init.sh"]

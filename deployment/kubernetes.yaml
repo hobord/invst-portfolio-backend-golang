@@ -37,6 +37,10 @@ spec:
       - name: backend
         resources: {}
         image: hobord/invst-portfolio:demo
+        command:
+            - bash
+            - "-c"
+            - /app/portfolio-server serve
         env:
           - name: PORT
             value: "8080"

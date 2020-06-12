@@ -1,7 +1,22 @@
+# Portfolio server
+
+- [Portfolio server](#portfolio-server)
+  - [Develop](#develop)
+    - [With vim](#with-vim)
+    - [With VSCode](#with-vscode)
+    - [On Cloud](#on-cloud)
+  - [Test](#test)
+  - [Build](#build)
+  - [Use](#use)
+    - [DB init](#db-init)
+  - [Demo Deployment](#demo-deployment)
+    - [With docker compose](#with-docker-compose)
+    - [To Kubernetes](#to-kubernetes)
+
 ## Develop
 I recommend use Docker!
 
-### with vim
+### With vim
 
 https://github.com/hobord/docker-golang-dev
 
@@ -11,13 +26,13 @@ docker run --user $(id -u):$(id -g) -it --rm -w=/workspace -v $(pwd):/workspace 
 vim
 ```
 
-### with VSCode
+### With VSCode
 Install the [vscode-remote-extensionpack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack)
 (vscode in docker)
 
 Open in Devcontainer. 
 
-### on Cloud 
+### On Cloud 
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/hobord/invst-portfolio-backend-golang)
 
 ## Test
@@ -64,7 +79,7 @@ Environment vars:
   MIGRATIONS: "/app/migrations"
   FRONTEND: "/app/public"
 
-portfolio-server serve -l 8080 -H mysql:3306 -d testdb -u dbuser -P secret -f ./
+portfolio-server serve -l 8080 -H mysql:3306 -d testdb -u dbuser -P secret -f ./public
 ``` 
 
 ### DB init
@@ -80,13 +95,19 @@ portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastr
 portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastructure/mysql/migrations --down
 ```
 
-## Deployment
+## Demo Deployment
 
-### with docker compose
+I created a demo docker image (hobord/invst-portfolio:demo) which contains the backend and frontend too.
+
+The frontend source is located here: https://github.com/hobord/invst-portfolio-frontend.git
+
+### With docker compose
 
 ```
 docker-compose -f deployment/docker-compose.yaml up
 ```
+
+Open http://localhost:8080/
 
 ### To Kubernetes
 - You should modify the 'deployment/kubernetes.yaml' file!

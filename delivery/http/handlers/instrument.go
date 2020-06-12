@@ -95,6 +95,16 @@ func (app *InstrumentRestHTTPModule) CreateInstrument(w http.ResponseWriter, r *
 		return
 	}
 
+	exsist, err := app.instrumentInteractor.GetByID(r.Context(), createDTO.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if exsist != nil {
+		http.Error(w, "id is already taken", http.StatusBadRequest)
+		return
+	}
+
 	dtoIsValid := createDTO.Validate()
 	if dtoIsValid != nil {
 		http.Error(w, dtoIsValid.Error(), http.StatusBadRequest)
@@ -102,7 +112,7 @@ func (app *InstrumentRestHTTPModule) CreateInstrument(w http.ResponseWriter, r *
 	}
 
 	// Create a new entity.
-	entity := entity.CreateInstrumentEntity(createDTO.Name, createDTO.Symbol, createDTO.Type)
+	entity := entity.CreateInstrumentEntity(createDTO.ID, createDTO.Name, createDTO.Symbol, createDTO.Type)
 
 	// Save the new entity.
 	err = app.instrumentInteractor.Save(r.Context(), entity)

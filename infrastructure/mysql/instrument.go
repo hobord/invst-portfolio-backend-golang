@@ -32,7 +32,7 @@ func (r *InstrumentMysqlRepository) GetByID(ctx context.Context, id int) (*entit
 	entity := &entity.Instrument{}
 	err = row.Scan(&entity.ID, &entity.Name, &entity.Symbol, &entity.Type)
 	if err != nil {
-		return nil, err
+		return nil, nil
 	}
 
 	return entity, nil
@@ -113,8 +113,8 @@ func (r *InstrumentMysqlRepository) TotalCountOfList(ctx context.Context, keywor
 func (r *InstrumentMysqlRepository) Save(ctx context.Context, entity *entity.Instrument) error {
 	var querySTR string
 	isExists, err := r.GetByID(ctx, entity.ID)
-	if isExists == nil || entity.ID == 0 {
-		querySTR = "INSERT INTO instrument (name, symbol, instrumentType) VALUES (?, ?, ?);"
+	if isExists == nil {
+		querySTR = "INSERT INTO instrument (instrumentId, name, symbol, instrumentType) VALUES (?, ?, ?, ?);"
 	} else {
 		querySTR = "UPDATE instrument SET name = ?, symbol = ?, instrumentType = ? WHERE instrumentId = ?;"
 	}
@@ -125,7 +125,7 @@ func (r *InstrumentMysqlRepository) Save(ctx context.Context, entity *entity.Ins
 	defer stmt.Close()
 
 	if isExists == nil {
-		_, err = stmt.ExecContext(ctx, entity.Name, entity.Symbol, entity.Type)
+		_, err = stmt.ExecContext(ctx, entity.ID, entity.Name, entity.Symbol, entity.Type)
 	} else {
 		_, err = stmt.ExecContext(ctx, entity.Name, entity.Symbol, entity.Type, entity.ID)
 	}
