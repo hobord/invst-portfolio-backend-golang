@@ -17,6 +17,9 @@ type CreateInstrument struct {
 }
 
 func (instrument *CreateInstrument) Validate() error {
+	if instrument.ID <= 0 {
+		return errors.New("id should be bigger than 0")
+	}
 	if instrument.Name == "" {
 		return errors.New("missing 'name' property")
 	}
