@@ -8,4 +8,4 @@ else
 fi
 yarn
 yarn build
-cp -r dist ../pubic
+cp -r dist ../public
