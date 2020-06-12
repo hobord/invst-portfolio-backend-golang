@@ -70,3 +70,20 @@ portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastr
 
 portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastructure/mysql/migrations --down
 ```
+
+## Deployment
+
+### Docker compose
+
+```
+docker-compose -f deployment/docker-compose.yaml up
+```
+
+### Kubernetes
+- You should modify the deployment/kubernetes.yaml file!
+- Update the environment variables because this deployment not contains mysql deployment
+- I did not configured namespace!
+
+```
+kubectl apply -f deployment/kubernetes.yaml
+```

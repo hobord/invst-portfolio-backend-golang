@@ -1,0 +1,37 @@
+version: "2.1"
+
+services:
+  golang:
+    working_dir: /workspace
+    image: hobord/invst-portfolio:demo
+    environment:
+      PORT: "8080"
+      DB_HOST: "mysql:3306"
+      DB_USER: "dbuser"
+      DB_PASSWORD: "secret"
+      DB_NAME: "testdb"
+      MIGRATIONS: "/app/migrations"
+      FRONTEND: "/app/public"
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+  mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: supersecret
+      MYSQL_DATABASE: "testdb"
+      MYSQL_USER: "dbuser"
+      MYSQL_PASSWORD: "secret"
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: supersecret
+    depends_on:
+      - mysql
+    ports:
+      - "9080:80"
