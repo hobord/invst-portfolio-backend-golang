@@ -6,6 +6,7 @@ require (
 	github.com/corpix/uarand v0.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang-migrate/migrate/v4 v4.11.0
+	github.com/gorilla/handlers v1.4.2
 	github.com/gorilla/mux v1.7.4
 	github.com/icrowley/fake v0.0.0-20180203215853-4178557ae428
 	github.com/mitchellh/go-homedir v1.1.0

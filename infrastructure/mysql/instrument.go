@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/hobord/invst-portfolio-backend-golang/domain/entity"
@@ -124,7 +125,7 @@ func (r *InstrumentMysqlRepository) Save(ctx context.Context, entity *entity.Ins
 	defer stmt.Close()
 
 	if isExists == nil {
-		_, err = stmt.ExecContext(ctx, entity.ID, entity.Name, entity.Symbol, entity.Type)
+		_, err = stmt.ExecContext(ctx, entity.Name, entity.Symbol, entity.Type)
 	} else {
 		_, err = stmt.ExecContext(ctx, entity.Name, entity.Symbol, entity.Type, entity.ID)
 	}
@@ -133,7 +134,7 @@ func (r *InstrumentMysqlRepository) Save(ctx context.Context, entity *entity.Ins
 
 // Delete is delete the inetity record from the databese
 func (r *InstrumentMysqlRepository) Delete(ctx context.Context, id int) error {
-	querySTR := "DELETE FROM entity WHERE instrumentId=?;"
+	querySTR := "DELETE FROM instrument WHERE instrumentId=?;"
 	stmt, err := r.conn.Prepare(querySTR)
 	if err != nil {
 		return err

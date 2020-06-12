@@ -1,5 +1,5 @@
 ## Develop
-I recommend using Docker!
+I recommend use Docker!
 
 ### with vim
 
@@ -18,7 +18,19 @@ Install the [vscode-remote-extensionpack](https://marketplace.visualstudio.com/i
 Open in Devcontainer. 
 
 ### on Cloud 
-Open in Gitpod: https://gitpod.io/#https://github.com/hobord/invst-portfolio-backend-golang
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/hobord/invst-portfolio-backend-golang)
+
+## Test
+Run unit tests.
+```
+make configure
+make test
+```
+I created only one example unittest for http GetInstrumentByID handler, I need more time make the all tests.
+
+I using [testify](https://pkg.go.dev/mod/github.com/stretchr/testify@v1.4.0).
+
+And I using [mockery](github.com/vektra/mockery) to generate mocks from interfaces.
 
 ## Build
 
@@ -26,34 +38,35 @@ Open in Gitpod: https://gitpod.io/#https://github.com/hobord/invst-portfolio-bac
 make configure
 make
 ```
-It will make the server into the bin directory
+
+It will make "portfolio-server" into the "bin" directory
 
 ## Use
 ```
 portfolio-server serve [flags]
 
 Flags:
+  -c, --cors stringArray     CORS allowed origins You can use multiply this flag. If it is not set then *
   -H, --db_host string       Database host:port
   -d, --db_name string       Database name
   -P, --db_password string   Database password
   -u, --db_user string       Database user
-  -f, --frontend string      Public frontend files direcotry path  
+  -f, --frontend string      Public frontend files direcotry path
   -h, --help                 help for serve
-  -l, --port int             8080
-  -v, --verbose              log requests into stdout
+  -l, --port int             Listen on this port, default: 8080
 
-Global Flags:
-      --config string   config file (default is $HOME/.backend.yaml)
-
-bin/portfolio-server serve -l 8080 -H mysql:3306 -d testdb -u dbuser -P secret -f ./
+portfolio-server serve -l 8080 -H mysql:3306 -d testdb -u dbuser -P secret -f ./
 ``` 
 
 ### DB init
+It is create database tables, and seeding the default data.
 
+It is support migrate database stages.
+I using github.com/golang-migrate/migrate library.s
 ```
-bin/portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastructure/mysql/migrations 
+portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastructure/mysql/migrations 
 
-#down
+#down (delete all data)
 
-bin/portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastructure/mysql/migrations --down
+portfolio-server migrate -H mysql:3306 -d testdb -u dbuser -P secret -m infrastructure/mysql/migrations --down
 ```

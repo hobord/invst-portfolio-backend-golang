@@ -61,21 +61,14 @@ func (app *InstrumentRestHTTPModule) GetInstrumentByID(w http.ResponseWriter, r 
 
 	entityDTO := makeInstrumentDTO(entity)
 
-	js, err := json.Marshal(entityDTO)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	writeJsonResp(w, entityDTO)
 }
 
 // List return list of entities
 func (app *InstrumentRestHTTPModule) ListInstrument(w http.ResponseWriter, r *http.Request) {
-	keyword := r.FormValue("key")
+	keyword := r.FormValue("keyword")
 
-	res, _, err := app.instrumentInteractor.List(r.Context(), keyword, 0, 100)
+	res, _, err := app.instrumentInteractor.List(r.Context(), keyword, 0, 0)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -87,19 +80,11 @@ func (app *InstrumentRestHTTPModule) ListInstrument(w http.ResponseWriter, r *ht
 		entityDTOs = append(entityDTOs, entityDTO)
 	}
 
-	// Convert to json
-	js, err := json.Marshal(entityDTOs)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	writeJsonResp(w, entityDTOs)
 
-	// Send back to response.
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
 }
 
-// Create is update to persistent the entity
+// Create is create a new instrument
 func (app *InstrumentRestHTTPModule) CreateInstrument(w http.ResponseWriter, r *http.Request) {
 	// Decode the request DTO.
 	decoder := json.NewDecoder(r.Body)
@@ -107,6 +92,12 @@ func (app *InstrumentRestHTTPModule) CreateInstrument(w http.ResponseWriter, r *
 	err := decoder.Decode(&createDTO)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	dtoIsValid := createDTO.Validate()
+	if dtoIsValid != nil {
+		http.Error(w, dtoIsValid.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -123,19 +114,11 @@ func (app *InstrumentRestHTTPModule) CreateInstrument(w http.ResponseWriter, r *
 	// Create a new response DTO.
 	entityDTO := makeInstrumentDTO(entity)
 
-	// Convert to json
-	js, err := json.Marshal(entityDTO)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	writeJsonResp(w, entityDTO)
 
-	// Send back to response.
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
 }
 
-// Update is update to persistent the entity.
+// Update is update instrument entity.
 func (app *InstrumentRestHTTPModule) UpdateInstrument(w http.ResponseWriter, r *http.Request) {
 	// Decode the request DTO.
 	decoder := json.NewDecoder(r.Body)
@@ -177,30 +160,20 @@ func (app *InstrumentRestHTTPModule) UpdateInstrument(w http.ResponseWriter, r *
 	// Create a response DTO.
 	entityDTO := makeInstrumentDTO(entity)
 
-	// Convert to json
-	js, err := json.Marshal(entityDTO)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Send back to response.
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	writeJsonResp(w, entityDTO)
 }
 
 // Delete entity
 func (app *InstrumentRestHTTPModule) DeleteInstrument(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-
 	if id == "" {
 		http.Error(w, "missing id", http.StatusBadRequest)
 		return
 	}
 	i, err := strconv.Atoi(id)
 	if err != nil {
-		http.Error(w, "id should be integer", http.StatusBadRequest)
+		http.Error(w, "id should be an integer", http.StatusBadRequest)
 		return
 	}
 
@@ -220,4 +193,23 @@ func (app *InstrumentRestHTTPModule) DeleteInstrument(w http.ResponseWriter, r *
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	resp := &dto.DeleteIntrumentResponse{
+		Success: true,
+	}
+
+	writeJsonResp(w, resp)
+}
+
+func writeJsonResp(w http.ResponseWriter, resp interface{}) {
+	// Convert to json
+	js, err := json.Marshal(resp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Send back to response.
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
 }

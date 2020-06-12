@@ -65,7 +65,7 @@ func TestGetInstrumentByID(t *testing.T) {
 		var err error
 		// Create a test request
 		if testCase.input == nil {
-			req, err = http.NewRequest("GET", "/instruments/NOTFOUND_SIMULATION", nil)
+			req, err = http.NewRequest("GET", "/instruments/BAD_REQUEST", nil)
 		} else {
 			req, err = http.NewRequest("GET", fmt.Sprintf("/instruments/%d", testCase.input.ID), nil)
 		}

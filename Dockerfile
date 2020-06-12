@@ -5,7 +5,7 @@ workdir /src
 COPY . /src
 
 RUN make configure \
-    && make test
+    && make test \
     && make
 
 FROM alpine

@@ -4,10 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"net/http"
 
-	"github.com/gorilla/mux"
-	httpDelivery "github.com/hobord/invst-portfolio-backend-golang/delivery/http"
+	http "github.com/hobord/invst-portfolio-backend-golang/delivery/http"
 	persistence "github.com/hobord/invst-portfolio-backend-golang/infrastructure/mysql"
 	interactor "github.com/hobord/invst-portfolio-backend-golang/interactors"
 	"github.com/spf13/cobra"
@@ -22,8 +20,14 @@ var serverCMD = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("Start server")
 		httpPort, _ := cmd.Flags().GetInt("port")
-		requestsLog, _ := cmd.Flags().GetBool("verbose")
-		log.Printf("Requests log is: %v", requestsLog)
+		allowedOrigins, _ := cmd.Flags().GetStringArray("cors")
+		if len(allowedOrigins) == 0 {
+			allowedOrigins = append(allowedOrigins, "*")
+		}
+		log.Printf("AllowedOrigins: %v", allowedOrigins)
+
+		spaDir, _ := cmd.Flags().GetString("frontend")
+		log.Printf("SPA dir: %s", spaDir)
 
 		dbUser, _ := cmd.Flags().GetString("db_user")
 		dbPass, _ := cmd.Flags().GetString("db_password")
@@ -38,12 +42,7 @@ var serverCMD = &cobra.Command{
 
 		repository := persistence.NewInstrumentMysqlRepository(dbConn)
 		interactor := interactor.CreateInstrumentInteractor(repository)
-
-		r := mux.NewRouter()
-		httpDelivery.MakeRouting(r, interactor)
-
-		log.Printf("Listen on port: %v", httpPort)
-		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", httpPort), r))
+		http.MakeWebServer(httpPort, allowedOrigins, spaDir, interactor)
 	},
 }
 
@@ -51,12 +50,11 @@ func init() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	rootCmd.AddCommand(serverCMD)
-	serverCMD.Flags().IntP("port", "l", viper.GetInt("PORT"), "8080")
-	serverCMD.Flags().BoolP("verbose", "v", viper.GetBool("LOG"), "Log requests into stdout")
+	serverCMD.Flags().IntP("port", "l", viper.GetInt("PORT"), "Listen on this port, default: 8080")
+	serverCMD.Flags().StringArrayP("cors", "c", viper.GetStringSlice("CORS"), "CORS allowed origins You can use multiply this flag. If it is not set then *")
 	serverCMD.Flags().StringP("db_user", "u", viper.GetString("DB_USER"), "Database user")
 	serverCMD.Flags().StringP("db_password", "P", viper.GetString("DB_PASSWORD"), "Database password")
 	serverCMD.Flags().StringP("db_host", "H", viper.GetString("DB_HOST"), "Database host:port")
 	serverCMD.Flags().StringP("db_name", "d", viper.GetString("DB_NAME"), "Database name")
 	serverCMD.Flags().StringP("frontend", "f", viper.GetString("FRONTEND"), "Public frontend files direcotry path")
-	// serverCMD.Flags().StringP("db_connection", "d", viper.GetString("DB_CONNECTION"), )
 }
