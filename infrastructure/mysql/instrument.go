@@ -66,14 +66,21 @@ func (r *InstrumentMysqlRepository) GetAll(ctx context.Context) ([]*entity.Instr
 	return results, err
 }
 
-// List is get list of Instruments according by keyword. You have to use pagination
-func (r *InstrumentMysqlRepository) List(ctx context.Context, keyword string, offset, limit int) ([]*entity.Instrument, error) {
-	querySTR := "SELECT instrumentId, name, symbol, instrumentType FROM instrument"
+func makeListQueryWhere(keyword string) (string, []interface{}) {
+	querySTR := ""
 	queryParams := make([]interface{}, 0)
 	if keyword != "" {
-		querySTR = querySTR + " WHERE symbol LIKE concat('%', ?, '%')"
-		queryParams = append(queryParams, keyword)
+		querySTR = " WHERE name LIKE concat('%', ?, '%') OR symbol LIKE concat('%', ?, '%')"
+		queryParams = append(queryParams, keyword, keyword)
 	}
+	return querySTR, queryParams
+}
+
+// List is get list of Instruments according by keyword. You can use pagination if limit > 0
+func (r *InstrumentMysqlRepository) List(ctx context.Context, keyword string, offset, limit int) ([]*entity.Instrument, error) {
+	querySTR := "SELECT instrumentId, name, symbol, instrumentType FROM instrument"
+	where, queryParams := makeListQueryWhere(keyword)
+	querySTR = querySTR + where
 	querySTR = querySTR + " ORDER BY instrumentId DESC"
 	if limit > 0 {
 		querySTR = fmt.Sprintf("%s LIMIT %d, %d", querySTR, offset, limit)
@@ -95,12 +102,8 @@ func (r *InstrumentMysqlRepository) List(ctx context.Context, keyword string, of
 func (r *InstrumentMysqlRepository) TotalCountOfList(ctx context.Context, keyword string) (int, error) {
 	var cnt int
 	querySTR := "SELECT count(instrumentId) FROM instrument"
-	queryParams := make([]interface{}, 0)
-	if keyword != "" {
-		querySTR = querySTR + " WHERE symbol LIKE concat('%', ?, '%')"
-		queryParams = append(queryParams, keyword)
-	}
-	querySTR = querySTR + ";"
+	where, queryParams := makeListQueryWhere(keyword)
+	querySTR = querySTR + where + ";"
 	result, err := queryRow(ctx, r.conn, querySTR, queryParams...)
 	if err != nil {
 		return 0, err
