@@ -7,6 +7,13 @@ services:
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
     user: vscode
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: supersecret
+      DB_NAME: testdb
+      FRONTEND: public
+      PORT: 8080
     volumes:
       # This is where VS Code should expect to find your project's source code
       # and the value of "workspaceFolder" in .devcontainer/devcontainer.json
